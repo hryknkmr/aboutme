@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Engineering Activity Snapshot</title>
+  <style>
+    :root {
+      --bg: #f4efe7;
+      --paper: #fffdf8;
+      --ink: #14202b;
+      --muted: #6b7280;
+      --line: #e7dcc9;
+      --teal: #0f766e;
+      --orange: #f97316;
+      --rose: #d97706;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(15,118,110,0.08), transparent 28%),
+        radial-gradient(circle at top right, rgba(249,115,22,0.08), transparent 32%),
+        var(--bg);
+      color: var(--ink);
+      font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+    }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 20px 64px; }
+    .hero {
+      display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; margin-bottom: 18px;
+    }
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: 0 20px 60px rgba(20,32,43,0.08);
+      padding: 24px;
+    }
+    .hero h1 { margin: 0 0 10px; font-size: 48px; line-height: 0.95; letter-spacing: -0.04em; }
+    .hero p { margin: 0; color: var(--muted); line-height: 1.7; }
+    .eyebrow { color: var(--teal); font-weight: 700; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 14px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .chip { padding: 8px 12px; border-radius: 999px; background: #e6f5f2; color: #0f4f4a; font-weight: 600; font-size: 13px; }
+    .chip-warm { background: #fff0df; color: #9a3412; }
+    .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .metric { padding: 14px; border-radius: 18px; background: #f7f1e7; border: 1px solid var(--line); }
+    .metric small { display: block; color: var(--muted); margin-bottom: 4px; }
+    .metric strong { font-size: 28px; }
+    .main { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 18px; margin-top: 18px; }
+    .section-title { margin: 0 0 14px; font-size: 22px; letter-spacing: -0.02em; }
+    .toolbar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .tab { border: 1px solid var(--line); background: #f8f4ec; color: var(--ink); border-radius: 999px; padding: 8px 12px; font-weight: 700; cursor: pointer; }
+    .tab.active { background: var(--ink); color: white; }
+    #network { width: 100%; height: 520px; display: block; border-radius: 20px; background: linear-gradient(180deg, #fffdf8, #fbf7ef); border: 1px solid var(--line); }
+    .legend { display: flex; gap: 14px; color: var(--muted); font-size: 13px; margin-top: 12px; }
+    .aside-grid { display: grid; gap: 18px; }
+    .mini-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #efe6d7; }
+    .entry-list { display: grid; gap: 12px; }
+    .entry { display: block; text-decoration: none; color: inherit; padding: 16px; border: 1px solid var(--line); border-radius: 18px; background: #fcfaf4; }
+    .entry-title { font-weight: 700; margin-bottom: 8px; line-height: 1.4; }
+    .entry-meta { color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .footer { margin-top: 20px; color: var(--muted); font-size: 13px; }
+    @media (max-width: 920px) {
+      .hero, .main { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 38px; }
+      #network { height: 420px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="card">
+        <div class="eyebrow">Engineering Activity Snapshot</div>
+        <h1>Profile README is the teaser.<br>Dashboard is the real map.</h1>
+        <p>公開してよい owner だけを対象に、最近の GitHub 活動を抽象テーマ・技術スタック・品質シグナルで整理した詳細ビューです。README には軽いカード、こちらには意味ネットワーク本編を置く想定です。</p>
+        <div class="chips"><span class="chip">Docker</span><span class="chip">Playwright</span><span class="chip">npm</span><span class="chip">ESLint</span><span class="chip">GitHub Actions</span><span class="chip">pnpm</span></div>
+        <div class="chips"><span class="chip chip-warm">Failure</span><span class="chip chip-warm">Audit</span><span class="chip chip-warm">Regression</span><span class="chip chip-warm">Hardening</span><span class="chip chip-warm">False Positive</span><span class="chip chip-warm">Bug</span></div>
+      </div>
+      <div class="card">
+        <div class="eyebrow">Snapshot</div>
+        <div class="meta-grid">
+          <div class="metric"><small>Updated</small><strong>2026-06-06</strong></div>
+          <div class="metric"><small>Allowed owners</small><strong>2</strong></div>
+          <div class="metric"><small>Items analyzed</small><strong>39</strong></div>
+          <div class="metric"><small>View style</small><strong>SVG + Graph</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="main">
+      <div class="card">
+        <h2 class="section-title">Semantic Network</h2>
+        <div class="toolbar">
+          <button class="tab active" data-kind="stack">Stack</button>
+          <button class="tab" data-kind="signal">Signals</button>
+          <button class="tab" data-kind="theme">Themes</button>
+        </div>
+        <svg id="network" viewBox="0 0 720 520" preserveAspectRatio="xMidYMid meet"></svg>
+        <div class="legend">
+          <span>node size = weight</span>
+          <span>edge opacity = relation strength</span>
+          <span>layout = radial snapshot</span>
+        </div>
+      </div>
+
+      <div class="aside-grid">
+        <div class="card">
+          <h2 class="section-title">Top Themes</h2>
+          <div class="mini-row"><span>documentation</span><b>29</b></div><div class="mini-row"><span>developer tooling</span><b>27</b></div><div class="mini-row"><span>product flows</span><b>22</b></div><div class="mini-row"><span>ci/cd</span><b>13</b></div><div class="mini-row"><span>selectors and dom</span><b>13</b></div><div class="mini-row"><span>e2e testing</span><b>11</b></div>
+        </div>
+        <div class="card">
+          <h2 class="section-title">Recent Public-Safe Activity</h2>
+          <div class="entry-list"><a class="entry" href="https://github.com/hryknkmr/playwright-ai-sandbox/pull/13"><div class="entry-title">refactor(e2e-lint): rule reassessment — remove/demote false-positive-prone rules</div><div class="entry-meta">stack: pnpm, npm</div><div class="entry-meta">signals: False Positive, Failure</div></a><a class="entry" href="https://github.com/hryknkmr/playwright-ai-sandbox/pull/8"><div class="entry-title">feat: adopt import alias / tag / @helper JSDoc conventions</div><div class="entry-meta">stack: pnpm, npm, ESLint, Biome, SSOT</div><div class="entry-meta">signals: Regression, Audit</div></a><a class="entry" href="https://github.com/hryknkmr/webwright-ai-sandbox/issues/1"><div class="entry-title">本リポジトリの活用方針・展開ディレクトリ／asset 管理・README 多言語対応の整理</div><div class="entry-meta">stack: Playwright</div><div class="entry-meta">signals: Regression</div></a><a class="entry" href="https://github.com/hryknkmr/playwright-ai-sandbox/issues/1"><div class="entry-title">Security hardening before public release (Actions pinning / Docker digest / Dependabot)</div><div class="entry-meta">stack: Playwright, GitHub Actions, pnpm, npm, Dependabot, Docker</div><div class="entry-meta">signals: Failure, Hardening, Audit</div></a><a class="entry" href="https://github.com/hryknkmr/playwright-ai-sandbox/pull/2"><div class="entry-title">feat: bootstrap playwright-ai-sandbox PoC (initial migration)</div><div class="entry-meta">stack: Playwright, a11y, Screen Reader, GitHub Actions, pnpm, npm, Docker, ESLint, Biome, SSOT</div><div class="entry-meta">signals: n/a</div></a><a class="entry" href="https://github.com/AxonRelay/core/pull/39"><div class="entry-title">Pivot to personal PoC: Actor governance + MCP + LangGraph Platform</div><div class="entry-meta">stack: Docker</div><div class="entry-meta">signals: n/a</div></a><a class="entry" href="https://github.com/hryknkmr/mail-server/issues/6"><div class="entry-title">サブドメインリダイレクト設定: notion.nkmr.work</div><div class="entry-meta">stack: n/a</div><div class="entry-meta">signals: n/a</div></a><a class="entry" href="https://github.com/hryknkmr/mail-server/issues/5"><div class="entry-title">セキュリティ強化・DKIM署名・送受信テスト・スマホ設定完了</div><div class="entry-meta">stack: Docker, DOM</div><div class="entry-meta">signals: Failure</div></a></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">Generated from allowlisted owners only. Vendor-specific product names are suppressed; general engineering terms such as SSOT, Playwright, a11y, WCAG, and GitHub Actions are retained.</div>
+  </div>
+
+  <script id="graph-data" type="application/json">{&quot;stack&quot;: {&quot;nodes&quot;: [{&quot;id&quot;: &quot;Docker&quot;, &quot;weight&quot;: 77.669, &quot;document_frequency&quot;: 22, &quot;idf&quot;: 1.5534}, {&quot;id&quot;: &quot;Playwright&quot;, &quot;weight&quot;: 67.748, &quot;document_frequency&quot;: 4, &quot;idf&quot;: 3.0794}, {&quot;id&quot;: &quot;npm&quot;, &quot;weight&quot;: 54.798, &quot;document_frequency&quot;: 7, &quot;idf&quot;: 2.6094}, {&quot;id&quot;: &quot;ESLint&quot;, &quot;weight&quot;: 49.539, &quot;document_frequency&quot;: 3, &quot;idf&quot;: 3.3026}, {&quot;id&quot;: &quot;GitHub Actions&quot;, &quot;weight&quot;: 46.192, &quot;document_frequency&quot;: 4, &quot;idf&quot;: 3.0794}, {&quot;id&quot;: &quot;pnpm&quot;, &quot;weight&quot;: 40.033, &quot;document_frequency&quot;: 4, &quot;idf&quot;: 3.0794}, {&quot;id&quot;: &quot;DOM&quot;, &quot;weight&quot;: 39.142, &quot;document_frequency&quot;: 7, &quot;idf&quot;: 2.6094}, {&quot;id&quot;: &quot;Dependabot&quot;, &quot;weight&quot;: 28.722, &quot;document_frequency&quot;: 2, &quot;idf&quot;: 3.5903}, {&quot;id&quot;: &quot;Screen Reader&quot;, &quot;weight&quot;: 16.458, &quot;document_frequency&quot;: 6, &quot;idf&quot;: 2.743}, {&quot;id&quot;: &quot;SSOT&quot;, &quot;weight&quot;: 14.361, &quot;document_frequency&quot;: 2, &quot;idf&quot;: 3.5903}], &quot;edges&quot;: [{&quot;source&quot;: &quot;npm&quot;, &quot;target&quot;: &quot;pnpm&quot;, &quot;weight&quot;: 35.333}, {&quot;source&quot;: &quot;ESLint&quot;, &quot;target&quot;: &quot;pnpm&quot;, &quot;weight&quot;: 24.859}, {&quot;source&quot;: &quot;Playwright&quot;, &quot;target&quot;: &quot;pnpm&quot;, &quot;weight&quot;: 24.636}, {&quot;source&quot;: &quot;Playwright&quot;, &quot;target&quot;: &quot;npm&quot;, &quot;weight&quot;: 24.425}, {&quot;source&quot;: &quot;ESLint&quot;, &quot;target&quot;: &quot;GitHub Actions&quot;, &quot;weight&quot;: 22.449}, {&quot;source&quot;: &quot;GitHub Actions&quot;, &quot;target&quot;: &quot;npm&quot;, &quot;weight&quot;: 22.286}, {&quot;source&quot;: &quot;ESLint&quot;, &quot;target&quot;: &quot;npm&quot;, &quot;weight&quot;: 21.569}, {&quot;source&quot;: &quot;ESLint&quot;, &quot;target&quot;: &quot;Playwright&quot;, &quot;weight&quot;: 18.477}, {&quot;source&quot;: &quot;GitHub Actions&quot;, &quot;target&quot;: &quot;pnpm&quot;, &quot;weight&quot;: 18.477}, {&quot;source&quot;: &quot;Dependabot&quot;, &quot;target&quot;: &quot;GitHub Actions&quot;, &quot;weight&quot;: 15.397}, {&quot;source&quot;: &quot;GitHub Actions&quot;, &quot;target&quot;: &quot;Playwright&quot;, &quot;weight&quot;: 15.397}, {&quot;source&quot;: &quot;SSOT&quot;, &quot;target&quot;: &quot;npm&quot;, &quot;weight&quot;: 14.361}, {&quot;source&quot;: &quot;SSOT&quot;, &quot;target&quot;: &quot;pnpm&quot;, &quot;weight&quot;: 14.361}, {&quot;source&quot;: &quot;ESLint&quot;, &quot;target&quot;: &quot;SSOT&quot;, &quot;weight&quot;: 14.073}, {&quot;source&quot;: &quot;Docker&quot;, &quot;target&quot;: &quot;npm&quot;, &quot;weight&quot;: 13.98}, {&quot;source&quot;: &quot;Dependabot&quot;, &quot;target&quot;: &quot;npm&quot;, &quot;weight&quot;: 13.047}, {&quot;source&quot;: &quot;DOM&quot;, &quot;target&quot;: &quot;Docker&quot;, &quot;weight&quot;: 12.427}, {&quot;source&quot;: &quot;Dependabot&quot;, &quot;target&quot;: &quot;Docker&quot;, &quot;weight&quot;: 10.874}]}, &quot;signal&quot;: {&quot;nodes&quot;: [{&quot;id&quot;: &quot;Failure&quot;, &quot;weight&quot;: 4}, {&quot;id&quot;: &quot;Audit&quot;, &quot;weight&quot;: 3}, {&quot;id&quot;: &quot;Regression&quot;, &quot;weight&quot;: 3}, {&quot;id&quot;: &quot;Hardening&quot;, &quot;weight&quot;: 2}, {&quot;id&quot;: &quot;False Positive&quot;, &quot;weight&quot;: 1}, {&quot;id&quot;: &quot;Bug&quot;, &quot;weight&quot;: 1}, {&quot;id&quot;: &quot;Timeout&quot;, &quot;weight&quot;: 1}], &quot;edges&quot;: [{&quot;source&quot;: &quot;Audit&quot;, &quot;target&quot;: &quot;Failure&quot;, &quot;weight&quot;: 1}, {&quot;source&quot;: &quot;Audit&quot;, &quot;target&quot;: &quot;Hardening&quot;, &quot;weight&quot;: 1}, {&quot;source&quot;: &quot;Audit&quot;, &quot;target&quot;: &quot;Regression&quot;, &quot;weight&quot;: 1}, {&quot;source&quot;: &quot;Failure&quot;, &quot;target&quot;: &quot;False Positive&quot;, &quot;weight&quot;: 1}, {&quot;source&quot;: &quot;Failure&quot;, &quot;target&quot;: &quot;Hardening&quot;, &quot;weight&quot;: 1}, {&quot;source&quot;: &quot;Failure&quot;, &quot;target&quot;: &quot;Timeout&quot;, &quot;weight&quot;: 1}]}, &quot;theme&quot;: {&quot;nodes&quot;: [{&quot;id&quot;: &quot;documentation&quot;, &quot;weight&quot;: 29}, {&quot;id&quot;: &quot;developer tooling&quot;, &quot;weight&quot;: 27}, {&quot;id&quot;: &quot;product flows&quot;, &quot;weight&quot;: 22}, {&quot;id&quot;: &quot;ci/cd&quot;, &quot;weight&quot;: 13}, {&quot;id&quot;: &quot;selectors and dom&quot;, &quot;weight&quot;: 13}, {&quot;id&quot;: &quot;e2e testing&quot;, &quot;weight&quot;: 11}, {&quot;id&quot;: &quot;quality assurance&quot;, &quot;weight&quot;: 8}, {&quot;id&quot;: &quot;accessibility&quot;, &quot;weight&quot;: 6}, {&quot;id&quot;: &quot;payments and subscriptions&quot;, &quot;weight&quot;: 6}, {&quot;id&quot;: &quot;source-of-truth alignment&quot;, &quot;weight&quot;: 2}], &quot;edges&quot;: [{&quot;source&quot;: &quot;developer tooling&quot;, &quot;target&quot;: &quot;documentation&quot;, &quot;weight&quot;: 25}, {&quot;source&quot;: &quot;developer tooling&quot;, &quot;target&quot;: &quot;product flows&quot;, &quot;weight&quot;: 15}, {&quot;source&quot;: &quot;documentation&quot;, &quot;target&quot;: &quot;product flows&quot;, &quot;weight&quot;: 15}, {&quot;source&quot;: &quot;product flows&quot;, &quot;target&quot;: &quot;selectors and dom&quot;, &quot;weight&quot;: 12}, {&quot;source&quot;: &quot;ci/cd&quot;, &quot;target&quot;: &quot;developer tooling&quot;, &quot;weight&quot;: 11}, {&quot;source&quot;: &quot;ci/cd&quot;, &quot;target&quot;: &quot;documentation&quot;, &quot;weight&quot;: 11}, {&quot;source&quot;: &quot;ci/cd&quot;, &quot;target&quot;: &quot;product flows&quot;, &quot;weight&quot;: 11}, {&quot;source&quot;: &quot;documentation&quot;, &quot;target&quot;: &quot;e2e testing&quot;, &quot;weight&quot;: 10}, {&quot;source&quot;: &quot;documentation&quot;, &quot;target&quot;: &quot;selectors and dom&quot;, &quot;weight&quot;: 10}, {&quot;source&quot;: &quot;developer tooling&quot;, &quot;target&quot;: &quot;e2e testing&quot;, &quot;weight&quot;: 9}, {&quot;source&quot;: &quot;developer tooling&quot;, &quot;target&quot;: &quot;selectors and dom&quot;, &quot;weight&quot;: 9}, {&quot;source&quot;: &quot;e2e testing&quot;, &quot;target&quot;: &quot;product flows&quot;, &quot;weight&quot;: 8}, {&quot;source&quot;: &quot;documentation&quot;, &quot;target&quot;: &quot;quality assurance&quot;, &quot;weight&quot;: 7}, {&quot;source&quot;: &quot;e2e testing&quot;, &quot;target&quot;: &quot;quality assurance&quot;, &quot;weight&quot;: 7}, {&quot;source&quot;: &quot;ci/cd&quot;, &quot;target&quot;: &quot;e2e testing&quot;, &quot;weight&quot;: 6}, {&quot;source&quot;: &quot;developer tooling&quot;, &quot;target&quot;: &quot;quality assurance&quot;, &quot;weight&quot;: 6}, {&quot;source&quot;: &quot;accessibility&quot;, &quot;target&quot;: &quot;developer tooling&quot;, &quot;weight&quot;: 4}, {&quot;source&quot;: &quot;accessibility&quot;, &quot;target&quot;: &quot;documentation&quot;, &quot;weight&quot;: 4}]}, &quot;items&quot;: [{&quot;title&quot;: &quot;refactor(e2e-lint): rule reassessment — remove/demote false-positive-prone rules&quot;, &quot;url&quot;: &quot;https://github.com/hryknkmr/playwright-ai-sandbox/pull/13&quot;, &quot;stack_terms&quot;: [&quot;pnpm&quot;, &quot;npm&quot;], &quot;signal_terms&quot;: [&quot;False Positive&quot;, &quot;Failure&quot;], &quot;topics&quot;: [&quot;e2e testing&quot;, &quot;quality assurance&quot;, &quot;developer tooling&quot;, &quot;documentation&quot;]}, {&quot;title&quot;: &quot;feat: adopt import alias / tag / @helper JSDoc conventions&quot;, &quot;url&quot;: &quot;https://github.com/hryknkmr/playwright-ai-sandbox/pull/8&quot;, &quot;stack_terms&quot;: [&quot;pnpm&quot;, &quot;npm&quot;, &quot;ESLint&quot;, &quot;Biome&quot;, &quot;SSOT&quot;], &quot;signal_terms&quot;: [&quot;Regression&quot;, &quot;Audit&quot;], &quot;topics&quot;: [&quot;e2e testing&quot;, &quot;ci/cd&quot;, &quot;quality assurance&quot;, &quot;source-of-truth alignment&quot;, &quot;developer tooling&quot;]}, {&quot;title&quot;: &quot;本リポジトリの活用方針・展開ディレクトリ／asset 管理・README 多言語対応の整理&quot;, &quot;url&quot;: &quot;https://github.com/hryknkmr/webwright-ai-sandbox/issues/1&quot;, &quot;stack_terms&quot;: [&quot;Playwright&quot;], &quot;signal_terms&quot;: [&quot;Regression&quot;], &quot;topics&quot;: [&quot;e2e testing&quot;, &quot;quality assurance&quot;, &quot;documentation&quot;]}, {&quot;title&quot;: &quot;Security hardening before public release (Actions pinning / Docker digest / Dependabot)&quot;, &quot;url&quot;: &quot;https://github.com/hryknkmr/playwright-ai-sandbox/issues/1&quot;, &quot;stack_terms&quot;: [&quot;Playwright&quot;, &quot;GitHub Actions&quot;, &quot;pnpm&quot;, &quot;npm&quot;, &quot;Dependabot&quot;], &quot;signal_terms&quot;: [&quot;Failure&quot;, &quot;Hardening&quot;, &quot;Audit&quot;], &quot;topics&quot;: [&quot;e2e testing&quot;, &quot;ci/cd&quot;, &quot;quality assurance&quot;, &quot;developer tooling&quot;, &quot;product flows&quot;]}, {&quot;title&quot;: &quot;feat: bootstrap playwright-ai-sandbox PoC (initial migration)&quot;, &quot;url&quot;: &quot;https://github.com/hryknkmr/playwright-ai-sandbox/pull/2&quot;, &quot;stack_terms&quot;: [&quot;Playwright&quot;, &quot;a11y&quot;, &quot;Screen Reader&quot;, &quot;GitHub Actions&quot;, &quot;pnpm&quot;], &quot;signal_terms&quot;: [], &quot;topics&quot;: [&quot;e2e testing&quot;, &quot;accessibility&quot;, &quot;ci/cd&quot;, &quot;source-of-truth alignment&quot;, &quot;developer tooling&quot;]}, {&quot;title&quot;: &quot;Pivot to personal PoC: Actor governance + MCP + LangGraph Platform&quot;, &quot;url&quot;: &quot;https://github.com/AxonRelay/core/pull/39&quot;, &quot;stack_terms&quot;: [&quot;Docker&quot;], &quot;signal_terms&quot;: [], &quot;topics&quot;: [&quot;e2e testing&quot;, &quot;ci/cd&quot;, &quot;payments and subscriptions&quot;, &quot;developer tooling&quot;, &quot;product flows&quot;]}, {&quot;title&quot;: &quot;サブドメインリダイレクト設定: notion.nkmr.work&quot;, &quot;url&quot;: &quot;https://github.com/hryknkmr/mail-server/issues/6&quot;, &quot;stack_terms&quot;: [], &quot;signal_terms&quot;: [], &quot;topics&quot;: [&quot;documentation&quot;]}, {&quot;title&quot;: &quot;セキュリティ強化・DKIM署名・送受信テスト・スマホ設定完了&quot;, &quot;url&quot;: &quot;https://github.com/hryknkmr/mail-server/issues/5&quot;, &quot;stack_terms&quot;: [&quot;Docker&quot;, &quot;DOM&quot;], &quot;signal_terms&quot;: [&quot;Failure&quot;], &quot;topics&quot;: [&quot;selectors and dom&quot;, &quot;developer tooling&quot;, &quot;product flows&quot;, &quot;documentation&quot;]}]}</script>
+  <script>
+    const state = JSON.parse(document.getElementById('graph-data').textContent);
+    const svg = document.getElementById('network');
+    const tabs = document.querySelectorAll('.tab');
+
+    function polar(index, total, radius) {
+      const angle = (-Math.PI / 2) + (index / total) * Math.PI * 2;
+      return { x: 360 + Math.cos(angle) * radius, y: 250 + Math.sin(angle) * radius };
+    }
+
+    function render(kind) {
+      const graph = state[kind];
+      svg.innerHTML = '';
+      const maxNode = Math.max(...graph.nodes.map(n => Number(n.weight) || 1), 1);
+      const maxEdge = Math.max(...graph.edges.map(e => Number(e.weight) || 1), 1);
+      const positions = new Map();
+      graph.nodes.forEach((node, index) => {
+        positions.set(node.id, polar(index, graph.nodes.length, 165 + (index % 2) * 26));
+      });
+      graph.edges.forEach(edge => {
+        const a = positions.get(edge.source);
+        const b = positions.get(edge.target);
+        if (!a || !b) return;
+        const opacity = 0.14 + (Number(edge.weight) / maxEdge) * 0.46;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', a.x);
+        line.setAttribute('y1', a.y);
+        line.setAttribute('x2', b.x);
+        line.setAttribute('y2', b.y);
+        line.setAttribute('stroke', kind === 'signal' ? '#f97316' : kind === 'theme' ? '#64748b' : '#0f766e');
+        line.setAttribute('stroke-opacity', opacity.toFixed(2));
+        line.setAttribute('stroke-width', 1 + (Number(edge.weight) / maxEdge) * 4);
+        svg.appendChild(line);
+      });
+      graph.nodes.forEach(node => {
+        const p = positions.get(node.id);
+        const r = 10 + (Number(node.weight) / maxNode) * 22;
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', p.x);
+        circle.setAttribute('cy', p.y);
+        circle.setAttribute('r', r);
+        circle.setAttribute('fill', kind === 'signal' ? '#fff0df' : kind === 'theme' ? '#e7eef7' : '#e6f5f2');
+        circle.setAttribute('stroke', kind === 'signal' ? '#f97316' : kind === 'theme' ? '#64748b' : '#0f766e');
+        circle.setAttribute('stroke-width', '2');
+        svg.appendChild(circle);
+
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('x', p.x);
+        label.setAttribute('y', p.y + 4);
+        label.setAttribute('text-anchor', 'middle');
+        label.setAttribute('font-family', 'Avenir Next, Helvetica Neue, Arial, sans-serif');
+        label.setAttribute('font-size', Math.max(10, Math.min(14, r * 0.55)));
+        label.setAttribute('font-weight', '700');
+        label.setAttribute('fill', '#14202b');
+        label.textContent = node.id;
+        svg.appendChild(label);
+      });
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(btn => btn.classList.toggle('active', btn === tab));
+        render(tab.dataset.kind);
+      });
+    });
+    render('stack');
+  </script>
+</body>
+</html>
