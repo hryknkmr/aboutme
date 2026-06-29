@@ -52,7 +52,13 @@
     .tab { border: 1px solid var(--line); background: #f8f4ec; color: var(--ink); border-radius: 999px; padding: 8px 12px; font-weight: 700; cursor: pointer; }
     .tab.active { background: var(--ink); color: white; }
     #network { width: 100%; height: 520px; display: block; border-radius: 20px; background: linear-gradient(180deg, #fffdf8, #fbf7ef); border: 1px solid var(--line); }
-    .legend { display: flex; gap: 14px; color: var(--muted); font-size: 13px; margin-top: 12px; }
+    .legend { display: flex; gap: 14px; color: var(--muted); font-size: 13px; margin-top: 12px; flex-wrap: wrap; }
+    #network circle { cursor: pointer; transition: opacity 0.15s ease; }
+    #network text { pointer-events: none; user-select: none; }
+    .tip { position: fixed; z-index: 20; max-width: 260px; padding: 10px 12px; border-radius: 12px; background: rgba(20,32,43,0.94); color: #fffdf8; font-size: 12.5px; line-height: 1.5; box-shadow: 0 12px 30px rgba(20,32,43,0.28); pointer-events: none; transform: translate(-50%, calc(-100% - 14px)); white-space: normal; }
+    .tip[hidden] { display: none; }
+    .tip b { font-size: 13.5px; }
+    .tip .tip-meta { color: #c7d2da; }
     .aside-grid { display: grid; gap: 18px; }
     .mini-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #efe6d7; }
     .entry-list { display: grid; gap: 12px; }
@@ -80,7 +86,7 @@
       <div class="card">
         <div class="eyebrow">Snapshot</div>
         <div class="meta-grid">
-          <div class="metric"><small>Updated</small><strong>2026-06-28</strong></div>
+          <div class="metric"><small>Updated</small><strong>2026-06-29</strong></div>
           <div class="metric"><small>Allowed owners</small><strong>2</strong></div>
           <div class="metric"><small>Items analyzed</small><strong>40</strong></div>
           <div class="metric"><small>View style</small><strong>SVG + Graph</strong></div>
@@ -97,10 +103,12 @@
           <button class="tab" data-kind="theme">Themes</button>
         </div>
         <svg id="network" viewBox="0 0 720 520" preserveAspectRatio="xMidYMid meet"></svg>
+        <div id="tip" class="tip" hidden></div>
         <div class="legend">
           <span>node size = weight</span>
-          <span>edge opacity = relation strength</span>
-          <span>layout = radial snapshot</span>
+          <span>edge thickness = relation strength</span>
+          <span>layout = force-directed (closer = stronger link)</span>
+          <span>hover a node for details</span>
         </div>
       </div>
 
@@ -124,64 +132,172 @@
     const state = JSON.parse(document.getElementById('graph-data').textContent);
     const svg = document.getElementById('network');
     const tabs = document.querySelectorAll('.tab');
+    const tip = document.getElementById('tip');
+    const SVGNS = 'http://www.w3.org/2000/svg';
+    const W = 720, H = 520, PAD = 70, CX = W / 2, CY = H / 2;
+    let current = null;
 
-    function polar(index, total, radius) {
-      const angle = (-Math.PI / 2) + (index / total) * Math.PI * 2;
-      return { x: 360 + Math.cos(angle) * radius, y: 250 + Math.sin(angle) * radius };
+    const colorFor = kind => kind === 'signal' ? '#f97316' : kind === 'theme' ? '#64748b' : '#0f766e';
+    const fillFor = kind => kind === 'signal' ? '#fff0df' : kind === 'theme' ? '#e7eef7' : '#e6f5f2';
+
+    // Deterministic force-directed layout: strong links pull nodes closer.
+    function layout(graph) {
+      const n = graph.nodes.length;
+      const idx = new Map();
+      const nodes = graph.nodes.map((node, i) => {
+        idx.set(node.id, i);
+        const a = (-Math.PI / 2) + (i / n) * Math.PI * 2;
+        return { id: node.id, weight: Number(node.weight) || 1, deg: 0,
+                 x: CX + Math.cos(a) * 150, y: CY + Math.sin(a) * 150, dx: 0, dy: 0 };
+      });
+      const maxEdge = Math.max(...graph.edges.map(e => Number(e.weight) || 1), 1);
+      const edges = graph.edges
+        .filter(e => idx.has(e.source) && idx.has(e.target))
+        .map(e => {
+          const a = idx.get(e.source), b = idx.get(e.target), w = Number(e.weight) / maxEdge;
+          nodes[a].deg += w; nodes[b].deg += w;
+          return { a: a, b: b, w: w };
+        });
+
+      const ITER = 320, K_REP = 32000, K_SPRING = 0.045, GRAV = 0.02;
+      for (let t = 0; t < ITER; t++) {
+        const cool = 1 - t / ITER;
+        for (let i = 0; i < n; i++) { nodes[i].dx = 0; nodes[i].dy = 0; }
+        for (let i = 0; i < n; i++) {
+          for (let j = i + 1; j < n; j++) {
+            let ddx = nodes[i].x - nodes[j].x, ddy = nodes[i].y - nodes[j].y;
+            let d2 = ddx * ddx + ddy * ddy; if (d2 < 1) d2 = 1;
+            const d = Math.sqrt(d2), f = K_REP / d2, ux = ddx / d, uy = ddy / d;
+            nodes[i].dx += ux * f; nodes[i].dy += uy * f;
+            nodes[j].dx -= ux * f; nodes[j].dy -= uy * f;
+          }
+        }
+        edges.forEach(e => {
+          const a = nodes[e.a], b = nodes[e.b];
+          let ddx = b.x - a.x, ddy = b.y - a.y;
+          let d = Math.sqrt(ddx * ddx + ddy * ddy); if (d < 1) d = 1;
+          const rest = 70 + (1 - e.w) * 150;
+          const f = K_SPRING * (d - rest) * (0.5 + e.w);
+          const ux = ddx / d, uy = ddy / d;
+          a.dx += ux * f; a.dy += uy * f;
+          b.dx -= ux * f; b.dy -= uy * f;
+        });
+        const maxStep = 24 * cool + 2;
+        for (let i = 0; i < n; i++) {
+          const nd = nodes[i];
+          nd.dx += (CX - nd.x) * GRAV; nd.dy += (CY - nd.y) * GRAV;
+          let sx = nd.dx * 0.08, sy = nd.dy * 0.08;
+          const sl = Math.sqrt(sx * sx + sy * sy);
+          if (sl > maxStep) { sx = sx / sl * maxStep; sy = sy / sl * maxStep; }
+          nd.x = Math.max(PAD, Math.min(W - PAD, nd.x + sx));
+          nd.y = Math.max(PAD, Math.min(H - PAD, nd.y + sy));
+        }
+      }
+      return { nodes: nodes, edges: edges };
     }
 
     function render(kind) {
       const graph = state[kind];
+      const color = colorFor(kind), fill = fillFor(kind);
+      const sim = layout(graph);
+      current = { kind: kind, sim: sim };
+      const maxNode = Math.max(...sim.nodes.map(nd => nd.weight), 1);
       svg.innerHTML = '';
-      const maxNode = Math.max(...graph.nodes.map(n => Number(n.weight) || 1), 1);
-      const maxEdge = Math.max(...graph.edges.map(e => Number(e.weight) || 1), 1);
-      const positions = new Map();
-      graph.nodes.forEach((node, index) => {
-        positions.set(node.id, polar(index, graph.nodes.length, 165 + (index % 2) * 26));
-      });
-      graph.edges.forEach(edge => {
-        const a = positions.get(edge.source);
-        const b = positions.get(edge.target);
-        if (!a || !b) return;
-        const opacity = 0.14 + (Number(edge.weight) / maxEdge) * 0.46;
-        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', a.x);
-        line.setAttribute('y1', a.y);
-        line.setAttribute('x2', b.x);
-        line.setAttribute('y2', b.y);
-        line.setAttribute('stroke', kind === 'signal' ? '#f97316' : kind === 'theme' ? '#64748b' : '#0f766e');
-        line.setAttribute('stroke-opacity', opacity.toFixed(2));
-        line.setAttribute('stroke-width', 1 + (Number(edge.weight) / maxEdge) * 4);
+
+      sim.edges.forEach(e => {
+        const a = sim.nodes[e.a], b = sim.nodes[e.b];
+        const line = document.createElementNS(SVGNS, 'line');
+        line.setAttribute('x1', a.x.toFixed(1)); line.setAttribute('y1', a.y.toFixed(1));
+        line.setAttribute('x2', b.x.toFixed(1)); line.setAttribute('y2', b.y.toFixed(1));
+        line.setAttribute('stroke', color);
+        line.setAttribute('stroke-opacity', (0.16 + e.w * 0.5).toFixed(2));
+        line.setAttribute('stroke-width', (1 + e.w * 5).toFixed(1));
+        line.dataset.a = e.a; line.dataset.b = e.b;
         svg.appendChild(line);
       });
-      graph.nodes.forEach(node => {
-        const p = positions.get(node.id);
-        const r = 10 + (Number(node.weight) / maxNode) * 22;
-        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        circle.setAttribute('cx', p.x);
-        circle.setAttribute('cy', p.y);
-        circle.setAttribute('r', r);
-        circle.setAttribute('fill', kind === 'signal' ? '#fff0df' : kind === 'theme' ? '#e7eef7' : '#e6f5f2');
-        circle.setAttribute('stroke', kind === 'signal' ? '#f97316' : kind === 'theme' ? '#64748b' : '#0f766e');
-        circle.setAttribute('stroke-width', '2');
+
+      sim.nodes.forEach((nd, i) => {
+        const r = 11 + (nd.weight / maxNode) * 22;
+        const circle = document.createElementNS(SVGNS, 'circle');
+        circle.setAttribute('cx', nd.x.toFixed(1)); circle.setAttribute('cy', nd.y.toFixed(1));
+        circle.setAttribute('r', r.toFixed(1));
+        circle.setAttribute('fill', fill);
+        circle.setAttribute('stroke', color); circle.setAttribute('stroke-width', '2');
+        circle.dataset.i = i;
+        circle.addEventListener('mouseenter', evt => showTip(evt, kind, i));
+        circle.addEventListener('mousemove', moveTip);
+        circle.addEventListener('mouseleave', hideTip);
         svg.appendChild(circle);
 
-        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        label.setAttribute('x', p.x);
-        label.setAttribute('y', p.y + 4);
+        const label = document.createElementNS(SVGNS, 'text');
+        label.setAttribute('x', nd.x.toFixed(1)); label.setAttribute('y', (nd.y + 4).toFixed(1));
         label.setAttribute('text-anchor', 'middle');
         label.setAttribute('font-family', 'Avenir Next, Helvetica Neue, Arial, sans-serif');
-        label.setAttribute('font-size', Math.max(10, Math.min(14, r * 0.55)));
+        label.setAttribute('font-size', Math.max(10, Math.min(14, r * 0.5)));
         label.setAttribute('font-weight', '700');
         label.setAttribute('fill', '#14202b');
-        label.textContent = node.id;
+        label.textContent = nd.id;
         svg.appendChild(label);
       });
+    }
+
+    function neighbors(sim, i) {
+      const out = [];
+      sim.edges.forEach(e => {
+        if (e.a === i) out.push([sim.nodes[e.b].id, e.w]);
+        else if (e.b === i) out.push([sim.nodes[e.a].id, e.w]);
+      });
+      out.sort((p, q) => q[1] - p[1]);
+      return out.slice(0, 4).map(p => p[0]);
+    }
+
+    function showTip(evt, kind, i) {
+      const sim = current.sim, nd = sim.nodes[i];
+      svg.querySelectorAll('line').forEach(ln => {
+        const inc = Number(ln.dataset.a) === i || Number(ln.dataset.b) === i;
+        ln.setAttribute('stroke-opacity', inc ? '0.85' : '0.05');
+      });
+      svg.querySelectorAll('circle').forEach(c => {
+        c.setAttribute('opacity', Number(c.dataset.i) === i ? '1' : '0.35');
+      });
+      const nb = neighbors(sim, i);
+      const unit = kind === 'stack' ? 'tf-idf weight' : 'co-occurrence count';
+      const node = document.createElement('div');
+      const strong = document.createElement('b'); strong.textContent = nd.id;
+      node.appendChild(strong);
+      const meta = document.createElement('div'); meta.className = 'tip-meta';
+      meta.textContent = unit + ': ' + (Math.round(nd.weight * 100) / 100);
+      node.appendChild(meta);
+      if (nb.length) {
+        const lk = document.createElement('div'); lk.className = 'tip-meta';
+        lk.textContent = 'linked: ' + nb.join(', ');
+        node.appendChild(lk);
+      }
+      tip.replaceChildren(...node.childNodes);
+      tip.hidden = false;
+      moveTip(evt);
+    }
+
+    function moveTip(evt) {
+      tip.style.left = evt.clientX + 'px';
+      tip.style.top = evt.clientY + 'px';
+    }
+
+    function hideTip() {
+      tip.hidden = true;
+      if (!current) return;
+      const sim = current.sim;
+      svg.querySelectorAll('line').forEach(ln => {
+        const e = sim.edges.find(x => x.a === Number(ln.dataset.a) && x.b === Number(ln.dataset.b));
+        ln.setAttribute('stroke-opacity', (0.16 + (e ? e.w : 0) * 0.5).toFixed(2));
+      });
+      svg.querySelectorAll('circle').forEach(c => c.setAttribute('opacity', '1'));
     }
 
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
         tabs.forEach(btn => btn.classList.toggle('active', btn === tab));
+        hideTip();
         render(tab.dataset.kind);
       });
     });
