@@ -53,7 +53,12 @@ SENSITIVE_TITLE = re.compile(
     r"encrypt|decrypt|crypt|cipher|hash|signature|signing|certificat|\bkeys?\b|login|logout|sign[- ]?in|"
     r"account|user ?id|rate[- ]?limit|throttl|attack|threat|malicious|harden|defen[cs]|boundar|isolat|"
     r"firewall|\bwaf\b|audit|compliance|\bgdpr\b|\bsbom\b|dependabot|"
-    r"認証|認可|暗号|証明書|署名|鍵|攻撃|防御|境界|脅威|不正|監査|ログイン|アカウント|分離|隔離",
+    r"認証|認可|暗号|証明書|署名|鍵|攻撃|防御|境界|脅威|不正|監査|ログイン|アカウント|分離|隔離|"
+    # attack classes
+    r"\brce\b|\bsqli?\b|\bxxe\b|\bssrf\b|\bidor\b|\bdos\b|\bddos\b|traversal|pollution|"
+    r"(?:code|command) execution|arbitrary (?:file|code|command)|deserializ|overflow|"
+    r"clickjack|phishing|privilege|escalat|takeover|hijack|tamper|poison|"
+    r"実行可能|任意の|乗っ取|改ざん|昇格|注入",
     re.I,
 )
 # A private title is listed only if it has none of: digits (PR/issue/ADR/ticket
