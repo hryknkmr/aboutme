@@ -26,12 +26,16 @@ class SensitiveTitleTest(unittest.TestCase):
             "Fix SSTI",
             "Fix ReDoS",
             "Fix zip slip",
+            "Fix cross-site scripting in comments",
+            "Prevent cross-site request forgery in forms",
             "ディレクトリトラバーサルを修正",
             "バッファオーバーフローを修正",
             "プロトタイプ汚染を修正",
             "安全でないデシリアライゼーションを修正",
             "任意コード実行を修正",
             "コマンド実行を修正",
+            "クロスサイトスクリプティングを修正",
+            "クロスサイトリクエストフォージェリを修正",
         ]
         for title in titles:
             with self.subTest(title=title):

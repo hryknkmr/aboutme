@@ -39,7 +39,9 @@ SUPPRESSED_TITLE_TERMS = [
 # Security-related titles are never listed (could advertise an unfixed weakness).
 SENSITIVE_TITLE = re.compile(
     r"secur|vulnerab|脆弱|\bcve\b|secret|credential|token|password|passwd|auth|exploit|"
-    r"\bxss\b|csrf|injection|leak|漏洩|権限|秘匿|個人情報|\bpii\b|\.(?:work|com|net|jp|io)\b|@|"
+    r"\bxss\b|csrf|cross[- ]site scripting|cross[- ]site request forgery|injection|leak|"
+    r"クロスサイトスクリプティング|クロスサイトリクエストフォージェリ|"
+    r"漏洩|権限|秘匿|個人情報|\bpii\b|\.(?:work|com|net|jp|io)\b|@|"
     # network / trust boundary
     r"host|origin|alias|receiver|endpoint|\bport\b|network|\bcors\b|\bcsp\b|cookie|session|"
     r"local|remote|domain|\burls?\b|\bip\b|proxy|"
